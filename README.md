@@ -27,4 +27,40 @@ outcome <- rbinom(100, 1, 0.5)
 
 # Fit the high-performance GLM
 model <- hiper_glm(design, outcome)
+```
+
+## Coefficient Extraction
+Use the coef function to extract coefficients from the model:
+
 ```R
+# Extract coefficients
+coefficients <- coef(model)
+print(coefficients)
+```
+
+##Variance-Covariance Matrix
+Use the vcov function to obtain the variance-covariance matrix:
+
+```R
+# Get variance-covariance matrix
+var_cov_matrix <- vcov(model)
+print(var_cov_matrix)
+```
+
+## Model Printing
+Use the print function to display information about the model:
+
+```R
+# Print model information
+print(model)
+```
+
+## License
+
+MIT License
+
+## Contact
+For any issues, questions, or feedback, please contact:
+
+Anagh Chattopadhyay
+Email: achatto4@jhu.edu
