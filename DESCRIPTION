@@ -3,8 +3,10 @@ Type: Package
 Title: High-Performance GLM
 Version: 0.1.0
 Author: Anagh Chattopadhyay
-Maintainer: achatto4@jhu.edu
+Maintainer: Anagh Chattopadhyay <achatto4@jhu.edu>
 Description: High-performance implementation of GLM.
-License: MIT + file LICENSE
-
-
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
