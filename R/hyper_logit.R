@@ -7,7 +7,5 @@
 #' @return An object of class 'hiper_glm'.
 #' @export
 hiper_glm <- function(design, outcome) {
-  model <- glm(outcome ~ design, family = "binomial")
-  class(model) <- "hiper_glm"
-  return(model)
+  warning("The 'hiper_glm' function is yet to be implemented.")
 }

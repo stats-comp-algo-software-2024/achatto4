@@ -1,20 +1,14 @@
 #' @export
 coef.hiper_glm <- function(object, ...) {
-  # Returning coefficients from the object(can be changed accordingly)
-  return(coef(object))
+  warning("The 'coef.hiper_glm' function is yet to be implemented.")
 }
 
 #' @export
 vcov.hiper_glm <- function(object, ...) {
-  # Returning var-cov matrix from the object(can be changed accordingly)
-  return(vcov(object))
+  warning("The 'vcov.hiper_glm' function is yet to be implemented.")
 }
 
 #' @export
 print.hiper_glm <- function(x, ...) {
-  # For example, printing relevant information about the model
-  cat("High-Performance GLM Model\n")
-  cat("Call: ", deparse(x$call), "\n")
-  cat("Coefficients:\n")
-  print(coef(x))
+  warning("The 'print.hiper_glm' function is yet to be implemented.")
 }
