@@ -12,3 +12,11 @@ vcov.hiper_glm <- function(object, ...) {
 print.hiper_glm <- function(x, ...) {
   warning("The 'print.hiper_glm' function is yet to be implemented.")
 }
+
+#stats::optim
+usethis::use_testthat()
+
+test_check("hiperglm")
+
+#actual test- helper.R, test-mle-finder.R
+
