@@ -4,12 +4,16 @@
 \alias{hiper_glm}
 \title{High-Performance GLM}
 \usage{
-hiper_glm(design, outcome)
+hiper_glm(design, outcome, model = "linear", option = list())
 }
 \arguments{
 \item{design}{A design matrix.}
 
 \item{outcome}{The outcome variable.}
+
+\item{model}{The type of model. Currently supports 'linear'.}
+
+\item{option}{A list of options. Currently supports 'mle_solver' with values 'LS' or 'BFGS'.}
 }
 \value{
 An object of class 'hiper_glm'.
