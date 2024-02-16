@@ -45,7 +45,7 @@ simulate_data <- function(n_obs,
 }
 
 
-# COde for finding approximate gradient
+#' Code for finding approximate gradient
 approx_grad <- function(func, x, dx = .Machine$double.eps ^ (1 / 3)) {
   d <- length(x)
   numerical_grad <- numeric(d)
