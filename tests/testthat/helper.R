@@ -1,14 +1,22 @@
-are_all_close <- function(v, w, abs_tol = 1e-6, rel_tol = 1e-6) {
+are_all_close <- function(v,
+                          w,
+                          abs_tol = 1e-6,
+                          rel_tol = 1e-6) {
   abs_diff <- abs(v - w)
   are_all_within_atol <- all(abs_diff < abs_tol)
-  are_all_within_rtol <- all(abs_diff < rel_tol * pmax(abs(v), abs(w)))
+  are_all_within_rtol <-
+    all(abs_diff < rel_tol * pmax(abs(v), abs(w)))
   return(are_all_within_atol && are_all_within_rtol)
 }
 
-simulate_data <- function(
-    n_obs, n_pred, model = "linear", intercept = NULL,
-    coef_true = NULL, design = NULL, seed = NULL, signal_to_noise = 5
-) {
+simulate_data <- function(n_obs,
+                          n_pred,
+                          model = "linear",
+                          intercept = NULL,
+                          coef_true = NULL,
+                          design = NULL,
+                          seed = NULL,
+                          signal_to_noise = 5) {
   if (!is.null(seed)) {
     set.seed(seed)
   }
@@ -26,15 +34,19 @@ simulate_data <- function(
     design <- cbind(rep(1, n_obs), design)
   }
   expected_mean <- as.vector(design %*% coef_true)
-  noise_magnitude <- sqrt(var(expected_mean) / signal_to_noise^2)
+  noise_magnitude <- sqrt(var(expected_mean) / signal_to_noise ^ 2)
   noise <- noise_magnitude * rnorm(n_obs)
   outcome <- expected_mean + noise
-  return(list(design = design, outcome = outcome, coef_true = coef_true))
+  return(list(
+    design = design,
+    outcome = outcome,
+    coef_true = coef_true
+  ))
 }
 
 
 # COde for finding approximate gradient
-approx_grad <- function(func, x, dx = .Machine$double.eps^(1/3)) {
+approx_grad <- function(func, x, dx = .Machine$double.eps ^ (1 / 3)) {
   d <- length(x)
   numerical_grad <- numeric(d)
   for (i in 1:d) {
@@ -46,4 +58,3 @@ approx_grad <- function(func, x, dx = .Machine$double.eps^(1/3)) {
   }
   return(numerical_grad)
 }
-

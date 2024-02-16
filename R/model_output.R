@@ -12,5 +12,3 @@ vcov.hiper_glm <- function(object, ...) {
 print.hiper_glm <- function(x, ...) {
   warning("The 'print.hiper_glm' function is yet to be implemented.")
 }
-
-
