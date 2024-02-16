@@ -1,6 +1,6 @@
 #' @export
 coef.hiper_glm <- function(object, ...) {
-  warning("The 'coef.hiper_glm' function is yet to be implemented.")
+  return(object$coefficients)
 }
 
 #' @export
