@@ -80,7 +80,7 @@ test_that("Gradient formula works!", {
 
 
 test_that("newton and bfgs outputs coincide on logit model", {
-  n_obs <- 32; n_pred <- 4
+  n_obs <- 40; n_pred <- 4
   data <- simulate_data(n_obs, n_pred, model = 'logit', seed = 1918)
   design <- data$design; outcome <- data$outcome
   via_newton_out <- hiper_glm(design, outcome, model = 'logit')

@@ -27,7 +27,7 @@ gradient_log_likelihood_logistic <- function(beta, design, outcome) {
   eta <- design %*% beta
   p <- exp(eta) / (1 + exp(eta))
   gradient <- t(design) %*% (outcome[[1]] - p)
-  return(gradient)  # Negative because optimizers typically minimize
+  return(-gradient)  # Negative because optimizers typically minimize
 }
 
 
@@ -46,14 +46,24 @@ newton_logistic <- function(design, outcome, start_values = NULL, max_iter = 100
     start_values <- rep(0, ncol(design))
   }
   beta <- start_values
-  iter=1
-  for (iter in 1:max_iter) {
+  iter <- 1
+  diff <- 1
+  while (iter < max_iter & diff > 10^-8) {
     gradient <- gradient_log_likelihood_logistic(beta, design, outcome)
     hessian <- hessian_log_likelihood_logistic(beta, design)
     update <- solve(hessian, gradient)
-    beta <- beta - update
+    init_log <- log_likelihood_logistic(beta = beta, design = design, outcome = outcome)
+    beta <- beta + update
+    fin_log <- log_likelihood_logistic(beta = beta, design = design, outcome = outcome)
+    diff <- abs(init_log - fin_log)
+    iter <- iter + 1
+    if (iter == max_iter) {
+      print("Newton did not converge within max number of iterations.")
+    }
+    print(diff)
   }
   return(beta)
 }
+
 
 

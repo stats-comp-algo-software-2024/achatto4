@@ -33,8 +33,7 @@ hiper_glm <-
             intercept = NULL,
             coef_true = NULL,
             design = NULL,
-            seed = NULL,
-            signal_to_noise = 5
+            seed = NULL
           )
 
           opt <-
