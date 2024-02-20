@@ -47,3 +47,47 @@ test_that("Gradient formula works!", {
 
   expect_true(are_all_close(a1, a2, abs_tol = 1e-4, rel_tol = 1e-4))
 })
+
+
+test_that("Gradient formula works!", {
+  n_obs <- 100
+  n_pred <- 10
+  n_tr <- 2
+  data <-
+    simulate_data(n_obs, n_pred, option = list(n_trial = n_tr), model = "logit", seed = 1000)
+  design1 <- data$design
+  outcome1 <- data$outcome
+  beta1 <- data$coef_true
+
+  a1 <-
+    gradient_log_likelihood_logistic(beta =  beta1,
+                 design = design1,
+                 outcome = outcome1)
+  a2 <-
+    approx_grad(
+      function(x)
+        log_likelihood_logistic(
+          x,
+          design = design1,
+          outcome = outcome1
+        ),
+      x = beta1,
+      dx = .Machine$double.eps ^ (1 / 3)
+    )
+
+  expect_true(are_all_close(c(a1), c(a2), abs_tol = 1e-2, rel_tol = 1e-2))
+})
+
+
+test_that("newton and bfgs outputs coincide on logit model", {
+  n_obs <- 32; n_pred <- 4
+  data <- simulate_data(n_obs, n_pred, model = 'logit', seed = 1918)
+  design <- data$design; outcome <- data$outcome
+  via_newton_out <- hiper_glm(design, outcome, model = 'logit')
+  via_bfgs_out <- hiper_glm(
+    design, outcome, model = 'logit', option = list(mle_solver = 'BFGS')
+  )
+  expect_true(are_all_close(
+    coef(via_newton_out), coef(via_bfgs_out), abs_tol = 1e-2, rel_tol = 1e-2
+  ))
+})

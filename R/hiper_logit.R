@@ -26,43 +26,16 @@ hiper_glm <-
     if (model == "linear") {
       if (!is.null(option) && "mle_solver" %in% names(option)) {
         if (option$mle_solver == "BFGS") {
-          simulate_data <- function(n_obs,
-                                    n_pred,
-                                    model = "linear",
-                                    intercept = NULL,
-                                    coef_true = NULL,
-                                    design = NULL,
-                                    seed = NULL,
-                                    signal_to_noise = 5) {
-            if (!is.null(seed)) {
-              set.seed(seed)
-            }
-            if (is.null(coef_true)) {
-              coef_true <- rnorm(n_pred, sd = 1 / sqrt(n_pred))
-            }
-            if (is.null(design)) {
-              design <- matrix(rnorm(n_obs * n_pred),
-                               nrow = n_obs,
-                               ncol = n_pred)
-            }
-            if (!is.null(intercept)) {
-              if (!is.numeric(intercept)) {
-                stop("The intercept argument must be numeric.")
-              }
-              coef_true <- c(intercept, coef_true)
-              design <- cbind(rep(1, n_obs), design)
-            }
-            expected_mean <- as.vector(design %*% coef_true)
-            noise_magnitude <-
-              sqrt(var(expected_mean) / signal_to_noise ^ 2)
-            noise <- noise_magnitude * rnorm(n_obs)
-            outcome <- expected_mean + noise
-            return(list(
-              design = design,
-              outcome = outcome,
-              coef_true = coef_true
-            ))
-          }
+          simulate_data(
+            n_obs,
+            n_pred,
+            model = "linear",
+            intercept = NULL,
+            coef_true = NULL,
+            design = NULL,
+            seed = NULL,
+            signal_to_noise = 5
+          )
 
           opt <-
             optim(
@@ -83,9 +56,43 @@ hiper_glm <-
         output <- list(coefficients = beta_hat, model = model)
         class(output) <- "hiper_glm"
       }
-    } else {
-      stop("Model type not supported. Only 'linear' model is currently supported.")
+    } else if (model == "logit"){
+      if (!is.null(option) && "mle_solver" %in% names(option)) {
+        if (option$mle_solver == "BFGS") {
+          simulate_data(
+            n_obs,
+            n_pred,
+            model = "logit",
+            intercept = NULL,
+            coef_true = NULL,
+            design = NULL,
+            seed = NULL,
+            option = list(n_trial = 2)
+          )
+
+          opt <-
+            optim(
+              par = rep(0, ncol(design)),
+              fn = log_likelihood_logistic,
+              gr = gradient_log_likelihood_logistic,
+              design = design,
+              outcome = outcome
+            )
+
+          output <- list(coefficients = opt$par, model = model)
+          class(output) <- "hiper_glm"
+        } else {
+          stop("Option not correct. Only 'BFGS' option is supported for 'mle_solver'.")
+        }
+      } else {
+        opt1<- newton_logistic(design = design,
+                               outcome = outcome, start_values = NULL, max_iter = 10000)
+        output <- list(coefficients = opt1, model = model)
+        class(output) <- "hiper_glm"
+      }
+
     }
 
     return(output)
   }
+
