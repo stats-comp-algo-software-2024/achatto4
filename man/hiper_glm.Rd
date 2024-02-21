@@ -27,5 +27,6 @@ data <- simulate_data(n_obs, n_pred, model = "linear", seed = 1)
 design <- data$design; outcome <- data$outcome
 hiper_glm(design, outcome, model = "linear")
 hiper_glm(design, outcome, model = "linear", option = list(mle_solver = "BFGS"))
-
+hiper_glm(design, outcome, model = 'logit', option = list(mle_solver = 'BFGS'))
+hiper_glm(design, outcome, model = 'logit')
 }

@@ -60,10 +60,45 @@ newton_logistic <- function(design, outcome, start_values = NULL, max_iter = 100
     if (iter == max_iter) {
       print("Newton did not converge within max number of iterations.")
     }
-    print(diff)
   }
   return(beta)
 }
 
+find_mle_pseudoinverse <- function(design, outcome) {
+  beta_hat <- solve(t(design) %*% design, t(design) %*% outcome)
+  return(beta_hat)
+}
+
+find_mle_bfgs <- function(design, outcome) {
+  opt <- optim(
+    par = rep(0, ncol(design)),
+    fn = neg_log_likelihood,
+    gr = neg_gradient,
+    design = design,
+    outcome = outcome
+  )
+  return(opt$par)
+}
+
+find_mle_bfgs_log <- function(design, outcome) {
+  opt <- optim(
+    par = rep(0, ncol(design)),
+    fn = log_likelihood_logistic,
+    gr = gradient_log_likelihood_logistic,
+    design = design,
+    outcome = outcome
+  )
+  return(opt$par)
+}
+
+newton_algo <- function(design, outcome) {
+  opt1 <- newton_logistic(
+    design = design,
+    outcome = outcome,
+    start_values = NULL,
+    max_iter = 10000
+  )
+  return(opt1)
+}
 
 

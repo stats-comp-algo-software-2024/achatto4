@@ -1,6 +1,8 @@
 
 
 
+
+
 #' High-Performance GLM
 #'
 #' Fits a high-performance generalized linear model.
@@ -16,7 +18,8 @@
 #' design <- data$design; outcome <- data$outcome
 #' hiper_glm(design, outcome, model = "linear")
 #' hiper_glm(design, outcome, model = "linear", option = list(mle_solver = "BFGS"))
-#'
+#' hiper_glm(design, outcome, model = 'logit', option = list(mle_solver = 'BFGS'))
+#' hiper_glm(design, outcome, model = 'logit')
 
 hiper_glm <-
   function(design,
@@ -36,26 +39,18 @@ hiper_glm <-
             seed = NULL
           )
 
-          opt <-
-            optim(
-              par = rep(0, ncol(design)),
-              fn = neg_log_likelihood,
-              gr = neg_gradient,
-              design = design,
-              outcome = outcome
-            )
+          output <-
+            list(coefficients = find_mle_bfgs(design, outcome),
+                 model = model)
 
-          output <- list(coefficients = opt$par, model = model)
-          class(output) <- "hiper_glm"
         } else {
           stop("Option not correct. Only 'BFGS' option is supported for 'mle_solver'.")
         }
       } else {
-        beta_hat <- solve(t(design) %*% design, t(design) %*% outcome)
-        output <- list(coefficients = beta_hat, model = model)
-        class(output) <- "hiper_glm"
+        output <- list(coefficients = find_mle_pseudoinverse(design, outcome), model = model)
+
       }
-    } else if (model == "logit"){
+    } else if (model == "logit") {
       if (!is.null(option) && "mle_solver" %in% names(option)) {
         if (option$mle_solver == "BFGS") {
           simulate_data(
@@ -69,29 +64,24 @@ hiper_glm <-
             option = list(n_trial = 2)
           )
 
-          opt <-
-            optim(
-              par = rep(0, ncol(design)),
-              fn = log_likelihood_logistic,
-              gr = gradient_log_likelihood_logistic,
-              design = design,
-              outcome = outcome
-            )
 
-          output <- list(coefficients = opt$par, model = model)
-          class(output) <- "hiper_glm"
+          output <-
+            list(coefficients = find_mle_bfgs_log(design, outcome),
+                 model = model)
+
         } else {
           stop("Option not correct. Only 'BFGS' option is supported for 'mle_solver'.")
         }
       } else {
-        opt1<- newton_logistic(design = design,
-                               outcome = outcome, start_values = NULL, max_iter = 10000)
-        output <- list(coefficients = opt1, model = model)
-        class(output) <- "hiper_glm"
+        output <-
+          list(coefficients = newton_algo(design, outcome),
+               model = model)
+
       }
 
+    } else{
+      stop("Only 'Linear' and 'Logit' models are available.")
     }
-
+    class(output) <- "hiper_glm"
     return(output)
   }
-
