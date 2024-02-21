@@ -13,7 +13,7 @@ hiper_glm(design, outcome, model = "linear", option = list())
 
 \item{model}{The type of model. Currently supports 'linear'.}
 
-\item{option}{A list of options. Currently supports 'mle_solver' with values 'LS' or 'BFGS'.}
+\item{option}{A list of options. Currently supports 'mle_solver' with values 'LS' and 'Logit' in 'BFGS' and 'Newton'.}
 }
 \value{
 An object of class 'hiper_glm'.

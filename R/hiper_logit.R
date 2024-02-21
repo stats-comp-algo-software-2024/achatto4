@@ -11,7 +11,7 @@
 #' @param design A design matrix.
 #' @param outcome The outcome variable.
 #' @param model The type of model. Currently supports 'linear'.
-#' @param option A list of options. Currently supports 'mle_solver' with values 'LS' or 'BFGS'.
+#' @param option A list of options. Currently supports 'mle_solver' with values 'LS' and 'Logit' in 'BFGS' and 'Newton'.
 #' @return An object of class 'hiper_glm'.
 #' @examples n_obs <- 10; n_pred <- 5
 #' data <- simulate_data(n_obs, n_pred, model = "linear", seed = 1)

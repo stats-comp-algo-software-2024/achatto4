@@ -9,18 +9,24 @@ are_all_close <- function(v,
   return(are_all_within_atol && are_all_within_rtol)
 }
 
-simulate_data <- function(
-    n_obs, n_pred, model = "linear", intercept = NULL,
-    coef_true = NULL, design = NULL, seed = NULL, option = list()
-) {
+simulate_data <- function(n_obs,
+                          n_pred,
+                          model = "linear",
+                          intercept = NULL,
+                          coef_true = NULL,
+                          design = NULL,
+                          seed = NULL,
+                          option = list()) {
   if (!is.null(seed)) {
     set.seed(seed)
   }
   if ((model != "linear")  && !is.null(option$signal_to_noise)) {
-    warning(paste(
-      "The `signal_to_noise` option is currently unsupported for",
-      "non-linear models and will be ignored."
-    ))
+    warning(
+      paste(
+        "The `signal_to_noise` option is currently unsupported for",
+        "non-linear models and will be ignored."
+      )
+    )
   }
   if (is.null(coef_true)) {
     coef_true <- rnorm(n_pred, sd = 1 / sqrt(n_pred))
@@ -41,7 +47,7 @@ simulate_data <- function(
     if (is.null(signal_to_noise)) {
       signal_to_noise <- 0.1
     }
-    noise_magnitude <- sqrt(var(expected_mean) / signal_to_noise^2)
+    noise_magnitude <- sqrt(var(expected_mean) / signal_to_noise ^ 2)
     noise <- noise_magnitude * rnorm(n_obs)
     outcome <- expected_mean + noise
   } else {
@@ -57,20 +63,25 @@ simulate_data <- function(
       outcome <- list(n_success = n_success, n_trial = n_trial)
     }
   }
-  return(list(design = design, outcome = outcome, coef_true = coef_true))
+  return(list(
+    design = design,
+    outcome = outcome,
+    coef_true = coef_true
+  ))
 }
 
 
 #' Code for finding approximate gradient
-approx_grad <- function(func, x, dx = .Machine$double.eps ^ (1 / 3)) {
-  d <- length(x)
-  numerical_grad <- numeric(d)
-  for (i in 1:d) {
-    x_plus <- x
-    x_minus <- x
-    x_plus[i] <- x_plus[i] + dx
-    x_minus[i] <- x_minus[i] - dx
-    numerical_grad[i] <- (func(x_plus) - func(x_minus)) / (2 * dx)
+approx_grad <-
+  function(func, x, dx = .Machine$double.eps ^ (1 / 3)) {
+    d <- length(x)
+    numerical_grad <- numeric(d)
+    for (i in 1:d) {
+      x_plus <- x
+      x_minus <- x
+      x_plus[i] <- x_plus[i] + dx
+      x_minus[i] <- x_minus[i] - dx
+      numerical_grad[i] <- (func(x_plus) - func(x_minus)) / (2 * dx)
+    }
+    return(numerical_grad)
   }
-  return(numerical_grad)
-}
