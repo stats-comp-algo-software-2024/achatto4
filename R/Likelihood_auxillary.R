@@ -49,19 +49,30 @@ hessian_log_likelihood_logistic <- function(beta, design) {
   return(Hessian)
 }
 
+#' Tolerance derivation
+tol_func <- function(num_repeat = 100000, p) {
+  tol_v = c()
+  for (i in 1:num_repeat) {
+    tol_v[i] = min(rnorm(p) ^ 2) / 2
+  }
+  return(quantile(tol_v, probs = 0.05))
+}
+
 #' Function to perform Newton's method for logistic regression
 newton_logistic <-
   function(design,
            outcome,
            start_values = NULL,
            max_iter = 10000) {
+    set.seed(100)
     if (is.null(start_values)) {
       start_values <- rep(0, ncol(design))
     }
     beta <- start_values
     iter <- 1
     diff <- 1
-    while (iter < max_iter & diff > 10 ^ -8) {
+    tol_value= tol_func(num_repeat = 10000, p<- dim(design)[2])
+    while (iter < max_iter & diff > tol_value) {
       gradient <- gradient_log_likelihood_logistic(beta, design, outcome)
       hessian <- hessian_log_likelihood_logistic(beta, design)
       update <- solve(hessian, gradient)
